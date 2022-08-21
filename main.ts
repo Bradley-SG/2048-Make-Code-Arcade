@@ -9,6 +9,9 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     combineUp()
     slideUp()
     if (setActionAchieved) {
+        music.stopAllSounds()
+        music.rest(2)
+        music.playTone(262, music.beat(BeatFraction.Sixteenth))
         pause(100)
         spawnNewTiles()
     }
@@ -48,6 +51,7 @@ function slideDown () {
                 }
             }
         }
+        pause(10)
     }
 }
 function slideLeft () {
@@ -66,6 +70,7 @@ function slideLeft () {
                 }
             }
         }
+        pause(10)
     }
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -81,6 +86,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         colorPallete = "Original"
     }
     blockSettings.writeString("colorPallete", colorPallete)
+    music.thump.play()
     updatePallete()
 })
 function combineUp () {
@@ -105,6 +111,7 @@ function startGame () {
     }
     highScore = blockSettings.readNumber("highScore")
     highScoreText = textsprite.create("High Score: " + highScore, 0, 15)
+    beatHighScore = false
     highScoreText.setPosition(80, 110)
     colorPallete = blockSettings.readString("colorPallete")
     palleteDisplay = textsprite.create(" ")
@@ -122,6 +129,9 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     combineLeft()
     slideLeft()
     if (setActionAchieved) {
+        music.stopAllSounds()
+        music.rest(2)
+        music.playTone(262, music.beat(BeatFraction.Sixteenth))
         pause(100)
         spawnNewTiles()
     }
@@ -142,6 +152,7 @@ function slideUp () {
                 }
             }
         }
+        pause(10)
     }
 }
 function placeTile (row: number, column: number, tileNum: number) {
@@ -155,6 +166,9 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     combineRight()
     slideRight()
     if (setActionAchieved) {
+        music.stopAllSounds()
+        music.rest(2)
+        music.playTone(262, music.beat(BeatFraction.Sixteenth))
         pause(100)
         spawnNewTiles()
     }
@@ -183,6 +197,9 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     combineDown()
     slideDown()
     if (setActionAchieved) {
+        music.stopAllSounds()
+        music.rest(2)
+        music.playTone(262, music.beat(BeatFraction.Sixteenth))
         pause(100)
         spawnNewTiles()
     }
@@ -191,6 +208,11 @@ function loop () {
     if (info.score() > highScore) {
         highScore = info.score()
         blockSettings.writeNumber("highScore", info.score())
+        if (beatHighScore == false) {
+            music.jumpUp.play()
+            beatHighScore = true
+            game.splash("[Milestone Complete] You have reached a new high score")
+        }
     }
     highScoreText.destroy()
     highScoreText = textsprite.create("High Score: " + highScore, 0, 15)
@@ -201,12 +223,16 @@ function updatePallete () {
         color.setPalette(
         color.originalPalette
         )
+        color.setColor(8, color.rgb(130, 90, 122))
     } else if (colorPallete == "Gray Scale") {
         color.setPalette(
         color.GrayScale
         )
-        color.setColor(15, color.rgb(220, 220, 220))
+        color.setColor(15, color.rgb(120, 120, 120))
         color.setColor(1, color.rgb(20, 20, 20))
+        color.setColor(3, color.rgb(55, 55, 55))
+        color.setColor(10, color.rgb(30, 30, 30))
+        color.setColor(12, color.rgb(12, 12, 12))
     } else if (colorPallete == "Poke") {
         color.setPalette(
         color.Poke
@@ -217,6 +243,7 @@ function updatePallete () {
         color.setPalette(
         color.DIY
         )
+        color.setColor(8, color.rgb(255, 204, 0))
     } else if (colorPallete == "Steam Punk") {
         color.setPalette(
         color.SteamPunk
@@ -341,12 +368,14 @@ function slideRight () {
                 }
             }
         }
+        pause(10)
     }
 }
 let tempCounter = 0
 let generatedY = 0
 let generatedX = 0
 let palleteDisplay: TextSprite = null
+let beatHighScore = false
 let highScoreText: TextSprite = null
 let highScore = 0
 let colorPallete = ""
@@ -357,7 +386,16 @@ if (blockSettings.exists("colorPallete")) {
     startGame()
 } else {
     blockSettings.writeString("colorPallete", "Original")
-    startGame()
+}
+if ("navigation" != "navigation") {
+    slideUp()
+    slideDown()
+    slideLeft()
+    slideRight()
+    combineUp()
+    combineDown()
+    combineLeft()
+    combineRight()
 }
 forever(function () {
     loop()
