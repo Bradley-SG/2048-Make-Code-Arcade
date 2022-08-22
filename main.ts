@@ -10,14 +10,15 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     slideUp()
     if (setActionAchieved) {
         music.stopAllSounds()
-        music.rest(2)
+        music.rest(5)
+        music.setVolume(40)
         music.playTone(262, music.beat(BeatFraction.Sixteenth))
         pause(100)
         spawnNewTiles()
     }
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-	
+    startGame()
 })
 function combineLeft () {
     for (let i2 = 0; i2 <= 3; i2++) {
@@ -86,6 +87,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         colorPallete = "Original"
     }
     blockSettings.writeString("colorPallete", colorPallete)
+    music.setVolume(160)
     music.thump.play()
     updatePallete()
 })
@@ -106,6 +108,9 @@ function combineUp () {
     }
 }
 function startGame () {
+    music.setVolume(40)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+    palleteDisplay = textsprite.create(".")
     if (!(blockSettings.readNumber("highScore") >= 0)) {
         blockSettings.writeNumber("highScore", 0)
     }
@@ -114,7 +119,7 @@ function startGame () {
     beatHighScore = false
     highScoreText.setPosition(80, 110)
     colorPallete = blockSettings.readString("colorPallete")
-    palleteDisplay = textsprite.create(" ")
+    palleteDisplay.destroy()
     updatePallete()
     info.setScore(0)
     tiles.setCurrentTilemap(tilemap`2048Grid-Standard`)
@@ -130,7 +135,8 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     slideLeft()
     if (setActionAchieved) {
         music.stopAllSounds()
-        music.rest(2)
+        music.rest(5)
+        music.setVolume(40)
         music.playTone(262, music.beat(BeatFraction.Sixteenth))
         pause(100)
         spawnNewTiles()
@@ -167,7 +173,8 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     slideRight()
     if (setActionAchieved) {
         music.stopAllSounds()
-        music.rest(2)
+        music.rest(5)
+        music.setVolume(40)
         music.playTone(262, music.beat(BeatFraction.Sixteenth))
         pause(100)
         spawnNewTiles()
@@ -198,7 +205,8 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     slideDown()
     if (setActionAchieved) {
         music.stopAllSounds()
-        music.rest(2)
+        music.rest(5)
+        music.setVolume(40)
         music.playTone(262, music.beat(BeatFraction.Sixteenth))
         pause(100)
         spawnNewTiles()
@@ -211,7 +219,7 @@ function loop () {
         if (beatHighScore == false) {
             music.jumpUp.play()
             beatHighScore = true
-            game.splash("[Milestone Complete] You have reached a new high score")
+            game.showLongText("[Milestone Complete] You have reached a new high score", DialogLayout.Bottom)
         }
     }
     highScoreText.destroy()
@@ -249,9 +257,7 @@ function updatePallete () {
         color.SteamPunk
         )
     }
-    for (let index = 0; index < 30; index++) {
-        palleteDisplay.destroy()
-    }
+    palleteDisplay.destroy()
     if (colorPallete == "Original") {
         palleteDisplay = textsprite.create("", 1, 1)
     } else {
@@ -374,10 +380,10 @@ function slideRight () {
 let tempCounter = 0
 let generatedY = 0
 let generatedX = 0
-let palleteDisplay: TextSprite = null
 let beatHighScore = false
 let highScoreText: TextSprite = null
 let highScore = 0
+let palleteDisplay: TextSprite = null
 let colorPallete = ""
 let setActionAchieved = false
 let jNEW = 0
@@ -386,6 +392,7 @@ if (blockSettings.exists("colorPallete")) {
     startGame()
 } else {
     blockSettings.writeString("colorPallete", "Original")
+    startGame()
 }
 if ("navigation" != "navigation") {
     slideUp()
