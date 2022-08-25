@@ -214,13 +214,13 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 function loop () {
     if (info.score() > highScore) {
-        highScore = info.score()
-        blockSettings.writeNumber("highScore", info.score())
-        if (beatHighScore == false) {
+        if (beatHighScore == false && highScore != 0) {
             music.jumpUp.play()
             beatHighScore = true
             game.showLongText("[Milestone Complete] You have reached a new high score", DialogLayout.Bottom)
         }
+        highScore = info.score()
+        blockSettings.writeNumber("highScore", info.score())
     }
     highScoreText.destroy()
     highScoreText = textsprite.create("High Score: " + highScore, 0, 15)
@@ -331,6 +331,16 @@ function tileUp (xUP: number, yUP: number) {
                                         if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_1024`)) {
                                             tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_2048`)
                                             info.changeScoreBy(2048)
+                                        } else {
+                                            if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_2048`)) {
+                                                tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_4096`)
+                                                info.changeScoreBy(4096)
+                                            } else {
+                                                if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_4096`)) {
+                                                    tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_8192`)
+                                                    info.changeScoreBy(8192)
+                                                }
+                                            }
                                         }
                                     }
                                 }

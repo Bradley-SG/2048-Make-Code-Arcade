@@ -34,12 +34,6 @@
         "tilemapTile": true,
         "displayName": "Tile_0"
     },
-    "tile6": {
-        "data": "hwQQABAAAABVBQAAAABQVQUAAAAAAABQBQAAAAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAABQBQAAAAAAAFBVBQAAAABQVQ==",
-        "mimeType": "image/x-mkcd-f4",
-        "tilemapTile": true,
-        "displayName": "coverTile"
-    },
     "tile5": {
         "data": "hwQQABAAAADd3d3d3d3d3T0zMzMzMzPTPTMzMzMzM9M9M2M/M/Yz0z0z9v///zPTPTNjZmb2M9M9MzMzM2Mz0z0zMzMzMzPTPTNj//8/M9M9M/b2M/Yz0z0z9vYz9jPTPTP29mb2M9M9MzNj/z8z0z0zMzMzMzPTPTMzMzMzM9Pd3d3d3d3d3Q==",
         "mimeType": "image/x-mkcd-f4",
@@ -88,6 +82,18 @@
         "tilemapTile": true,
         "displayName": "Tile_2048"
     },
+    "tile15": {
+        "data": "hwQQABAAAADd3d3du7u7u42IiIiIiIi4jYiIiIiIiLi9zMyIyMyMuI2Iy4jIu4y4vczMzMi4jLiNu8u7yMzMvI2IuIi4u7u7jYiIiIiIiLi9zMzMiMzMvL28u8vIy7i8vYyIy8jLuLy9zMzMuMvMvI27u7uIuLu7jYiIiIiIiLjd3d3du7u7uw==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "Tile_4096"
+    },
+    "tile17": {
+        "data": "hwQQABAAAAAzMzMzMzMzM6Oqqqqqqqo6o6qqqqqqqjpj////+v+vOmOv9vb6Zq86Y6/29vpqrzpj////+v//P6NmZmZqZmY2o6qqqqqqqjqj9qr2+mr/P2P////69m8/Y/////r2Zj+jZmb2+v9qP6OqqmpqZqo2o6qqqqqqqjozMzMzMzMzMw==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "Tile_8192"
+    },
     "level1": {
         "id": "level1",
         "mimeType": "application/mkcd-tilemap",
@@ -105,7 +111,7 @@
     "level2": {
         "id": "level2",
         "mimeType": "application/mkcd-tilemap",
-        "data": "MTAwYTAwMGEwMDA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwMTAxMDEwMTA4MDgwODA4MDgwODAxMDEwMTAxMDgwODA4MDgwODA4MDEwMTAxMDEwODA4MDgwODA4MDgwMTAxMDEwMTA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwMTAyMDMwNDA1MDcwZDA5MGEwYjBjMDYwZTA4MDgwODA4MDgwODA4MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMA==",
+        "data": "MTAwYTAwMGEwMDA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwMTAxMDEwMTA4MDgwODA4MDgwODAxMDEwMTAxMDgwODA4MDgwODA4MDEwMTAxMDEwODA4MDgwODA4MDgwMTAxMDEwMTA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDgwMTAyMDMwNDA1MDcwZDA5MGEwYjBjMDYwZTBmMDgwODA4MDgwODA4MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMA==",
         "tileset": [
             "myTiles.transparency16",
             "myTiles.tile1",
@@ -121,7 +127,8 @@
             "myTiles.tile12",
             "myTiles.tile13",
             "myTiles.tile9",
-            "myTiles.tile6"
+            "myTiles.tile15",
+            "myTiles.tile17"
         ],
         "displayName": "2048Grid-Standard"
     },
