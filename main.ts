@@ -161,6 +161,30 @@ function slideUp () {
         pause(10)
     }
 }
+function checkPossibleMoves () {
+    testTest = false
+    for (let check_i = 0; check_i <= 3; check_i++) {
+        for (let check_j = 0; check_j <= 3; check_j++) {
+            if (tiles.tileAtLocationEquals(tiles.getTileLocation(check_i + 3, check_j + 2), assets.tile`blankTile0`)) {
+                testTest = true
+            } else {
+                if (tiles.tileImageAtLocation(tiles.getTileLocation(check_i + 3, check_j + 2)) == tiles.tileImageAtLocation(tiles.getTileLocation(check_i + 3, check_j + 3))) {
+                    testTest = true
+                } else if (tiles.tileImageAtLocation(tiles.getTileLocation(check_i + 3, check_j + 2)) == tiles.tileImageAtLocation(tiles.getTileLocation(check_i + 2, check_j + 2))) {
+                    testTest = true
+                } else if (tiles.tileImageAtLocation(tiles.getTileLocation(check_i + 3, check_j + 2)) == tiles.tileImageAtLocation(tiles.getTileLocation(check_i + 4, check_j + 2))) {
+                    testTest = true
+                } else if (tiles.tileImageAtLocation(tiles.getTileLocation(check_i + 3, check_j + 2)) == tiles.tileImageAtLocation(tiles.getTileLocation(check_i + 3, check_j + 1))) {
+                    testTest = true
+                }
+            }
+        }
+    }
+    if (testTest == false) {
+        pause(1500)
+        game.over(false)
+    }
+}
 function placeTile (row: number, column: number, tileNum: number) {
     tiles.setTileAt(tiles.getTileLocation(column + 2, row + 1), tiles.tileImageAtLocation(tiles.getTileLocation(tileNum, 8)))
 }
@@ -225,6 +249,7 @@ function loop () {
     highScoreText.destroy()
     highScoreText = textsprite.create("High Score: " + highScore, 0, 15)
     highScoreText.setPosition(80, 110)
+    checkPossibleMoves()
 }
 function updatePallete () {
     if (colorPallete == "Original") {
@@ -390,6 +415,7 @@ function slideRight () {
 let tempCounter = 0
 let generatedY = 0
 let generatedX = 0
+let testTest = false
 let beatHighScore = false
 let highScoreText: TextSprite = null
 let highScore = 0
