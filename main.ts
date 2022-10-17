@@ -1,5 +1,6 @@
 namespace SpriteKind {
     export const _TileSprite = SpriteKind.create()
+    export const counter = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     iNEW = 0
@@ -11,10 +12,12 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (setActionAchieved) {
         music.stopAllSounds()
         music.rest(5)
-        music.setVolume(40)
-        music.playTone(262, music.beat(BeatFraction.Sixteenth))
+        music.setVolume(255)
+        music.playTone(262, music.beat(BeatFraction.Eighth))
         pause(100)
-        spawnNewTiles()
+        for (let index = 0; index < TileSpawnRate; index++) {
+            spawnNewTiles()
+        }
     }
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -87,7 +90,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         colorPallete = "Original"
     }
     blockSettings.writeString("colorPallete", colorPallete)
-    music.setVolume(160)
+    music.setVolume(150)
     music.thump.play()
     updatePallete()
 })
@@ -108,6 +111,10 @@ function combineUp () {
     }
 }
 function startGame () {
+    Settings()
+    if (highScoreManual >= 0) {
+        blockSettings.writeNumber("highScore", highScoreManual)
+    }
     music.setVolume(40)
     sprites.destroyAllSpritesOfKind(SpriteKind.Text)
     palleteDisplay = textsprite.create(".")
@@ -123,8 +130,9 @@ function startGame () {
     updatePallete()
     info.setScore(0)
     tiles.setCurrentTilemap(tilemap`2048Grid-Standard`)
-    spawnNewTiles()
-    spawnNewTiles()
+    for (let index = 0; index < StartingTileAmount; index++) {
+        spawnNewTiles()
+    }
 }
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     iNEW = 0
@@ -136,10 +144,12 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (setActionAchieved) {
         music.stopAllSounds()
         music.rest(5)
-        music.setVolume(40)
-        music.playTone(262, music.beat(BeatFraction.Sixteenth))
+        music.setVolume(255)
+        music.playTone(262, music.beat(BeatFraction.Eighth))
         pause(100)
-        spawnNewTiles()
+        for (let index = 0; index < TileSpawnRate; index++) {
+            spawnNewTiles()
+        }
     }
 })
 function slideUp () {
@@ -185,8 +195,29 @@ function checkPossibleMoves () {
         game.over(false)
     }
 }
+function Settings () {
+    // The amount of tiles spawned when starting a game. (Default = 2)
+    StartingTileAmount = 2
+    // The amount of tile spawned after every successful action. (Default = 1)
+    TileSpawnRate = 1
+    // The index value of tiles spawned e.g. 2**1 = 2, 2**3 = 8, 2**7 = 128 ,etc.
+    // This has a 10% chance of spawning a number of twice the value as the default e.g. 2**1 has a 90% chance of spawning a 2 and a 10% chance of spawning a 4
+    // 
+    // (Default = 1)
+    TileSpawnSize = 1
+    // the tile 512 spawns 0.9 * (1 / x) . Change the variable to change x and therefore the spawn rate. Set to 1 for a 90% chance to spawn.  (Default = 100000)
+    _512_SpawnRate_1 = 100000
+    // The manual highScore set. If the variable < 0, then it does NOT set the highScore manually, otherwise it sets the highScore to the provided number and it behaves usuall from there on, but on every game start it sets the highScore back to the specified amount. 
+    // 
+    // (Default = -1)
+    highScoreManual = -1
+    // Sets the constant tilemapHeightCounter. Do NOT change if you have no idea what your doing.
+    // 
+    // (Default = 22)
+    tilemapHeightCounter = 22
+}
 function placeTile (row: number, column: number, tileNum: number) {
-    tiles.setTileAt(tiles.getTileLocation(column + 2, row + 1), tiles.tileImageAtLocation(tiles.getTileLocation(tileNum, 8)))
+    tiles.setTileAt(tiles.getTileLocation(column + 2, row + 1), tiles.tileImageAtLocation(tiles.getTileLocation(0, tileNum + 8)))
 }
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     iNEW = 0
@@ -198,10 +229,12 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     if (setActionAchieved) {
         music.stopAllSounds()
         music.rest(5)
-        music.setVolume(40)
-        music.playTone(262, music.beat(BeatFraction.Sixteenth))
+        music.setVolume(255)
+        music.playTone(262, music.beat(BeatFraction.Eighth))
         pause(100)
-        spawnNewTiles()
+        for (let index = 0; index < TileSpawnRate; index++) {
+            spawnNewTiles()
+        }
     }
 })
 function combineRight () {
@@ -230,19 +263,17 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     if (setActionAchieved) {
         music.stopAllSounds()
         music.rest(5)
-        music.setVolume(40)
-        music.playTone(262, music.beat(BeatFraction.Sixteenth))
+        music.setVolume(255)
+        music.playTone(262, music.beat(BeatFraction.Eighth))
         pause(100)
-        spawnNewTiles()
+        for (let index = 0; index < TileSpawnRate; index++) {
+            spawnNewTiles()
+        }
     }
 })
 function loop () {
     if (info.score() > highScore) {
-        if (beatHighScore == false && highScore != 0) {
-            music.jumpUp.play()
-            beatHighScore = true
-            game.showLongText("[Milestone Complete] You have reached a new high score", DialogLayout.Bottom)
-        }
+        oldhighScore = highScore
         highScore = info.score()
         blockSettings.writeNumber("highScore", info.score())
     }
@@ -295,85 +326,32 @@ function updatePallete () {
 function spawnNewTiles () {
     generatedX = randint(1, 4)
     generatedY = randint(1, 4)
-    tempCounter = 0
+    counterSpawn = 0
     while (!(tiles.tileAtLocationEquals(tiles.getTileLocation(generatedX + 2, generatedY + 1), assets.tile`blankTile0`))) {
+        counterSpawn += 1
         generatedX = randint(1, 4)
         generatedY = randint(1, 4)
-        tempCounter += 1
-        if (100 < tempCounter) {
+        if (counterSpawn > 10000) {
             break;
         }
     }
     if (randint(1, 10) == 1) {
-        if (tiles.tileAtLocationEquals(tiles.getTileLocation(generatedX + 2, generatedY + 1), assets.tile`blankTile0`)) {
-            placeTile(generatedY, generatedX, 2)
-        }
-        console.log("Generated A Tile_4 at: X:" + generatedX + "Y:" + generatedX)
+        placeTile(generatedY, generatedX, TileSpawnSize + 1)
+        console.log("Generated A Tile_" + 2 ** (TileSpawnSize + 1) + " at: X: " + generatedX + "Y: " + generatedY)
+    } else if (randint(1, _512_SpawnRate_1) < _512_SpawnRate_1) {
+        placeTile(generatedY, generatedX, TileSpawnSize)
+        console.log("Generated A Tile_" + 2 ** TileSpawnSize + " at: X: " + generatedX + "Y: " + generatedY)
     } else {
-        if (tiles.tileAtLocationEquals(tiles.getTileLocation(generatedX + 2, generatedY + 1), assets.tile`blankTile0`)) {
-            placeTile(generatedY, generatedX, 1)
-        }
-        console.log("Generated A Tile_2 at: X:" + generatedX + "Y:" + generatedX)
+        placeTile(generatedY, generatedX, 9)
+        console.log("Generated A Tile_512 at: X:" + generatedX + "Y:" + generatedY)
     }
 }
 function tileUp (xUP: number, yUP: number) {
-    if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_2`)) {
-        tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_4`)
-        info.changeScoreBy(4)
-    } else {
-        if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_4`)) {
-            tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_0`)
-            info.changeScoreBy(8)
-        } else {
-            if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_0`)) {
-                tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_16`)
-                info.changeScoreBy(16)
-            } else {
-                if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_16`)) {
-                    tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_32`)
-                    info.changeScoreBy(32)
-                } else {
-                    if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_32`)) {
-                        tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_64`)
-                        info.changeScoreBy(64)
-                    } else {
-                        if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_64`)) {
-                            tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_128`)
-                            info.changeScoreBy(128)
-                        } else {
-                            if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_128`)) {
-                                tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_256`)
-                                info.changeScoreBy(256)
-                            } else {
-                                if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_256`)) {
-                                    tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_512`)
-                                    info.changeScoreBy(512)
-                                } else {
-                                    if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_512`)) {
-                                        tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_1024`)
-                                        info.changeScoreBy(1024)
-                                    } else {
-                                        if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_1024`)) {
-                                            tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_2048`)
-                                            info.changeScoreBy(2048)
-                                        } else {
-                                            if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_2048`)) {
-                                                tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_4096`)
-                                                info.changeScoreBy(4096)
-                                            } else {
-                                                if (tiles.tileAtLocationEquals(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_4096`)) {
-                                                    tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), assets.tile`Tile_8192`)
-                                                    info.changeScoreBy(8192)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    for (let index = 0; index <= tilemapHeightCounter - 9; index++) {
+        if (tiles.tileImageAtLocation(tiles.getTileLocation(0, index + 9)) == tiles.tileImageAtLocation(tiles.getTileLocation(xUP + 2, yUP + 1))) {
+            tiles.setTileAt(tiles.getTileLocation(xUP + 2, yUP + 1), tiles.tileImageAtLocation(tiles.getTileLocation(0, index + 10)))
+            info.changeScoreBy(2 ** (index + 2))
+            break;
         }
     }
 }
@@ -412,15 +390,22 @@ function slideRight () {
         pause(10)
     }
 }
-let tempCounter = 0
+let counterSpawn = 0
 let generatedY = 0
 let generatedX = 0
+let oldhighScore = 0
+let tilemapHeightCounter = 0
+let _512_SpawnRate_1 = 0
+let TileSpawnSize = 0
 let testTest = false
+let StartingTileAmount = 0
 let beatHighScore = false
 let highScoreText: TextSprite = null
 let highScore = 0
 let palleteDisplay: TextSprite = null
+let highScoreManual = 0
 let colorPallete = ""
+let TileSpawnRate = 0
 let setActionAchieved = false
 let jNEW = 0
 let iNEW = 0
@@ -429,16 +414,6 @@ if (blockSettings.exists("colorPallete")) {
 } else {
     blockSettings.writeString("colorPallete", "Original")
     startGame()
-}
-if ("navigation" != "navigation") {
-    slideUp()
-    slideDown()
-    slideLeft()
-    slideRight()
-    combineUp()
-    combineDown()
-    combineLeft()
-    combineRight()
 }
 forever(function () {
     loop()
